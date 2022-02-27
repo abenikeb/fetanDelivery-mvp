@@ -15,16 +15,15 @@ db.connect((err) => {
   console.log("DB Connected Successfully ");
 });
 
-app.get("/getEmployeeById_", (req, res) => {
-  var sql =
-    "CREATE TABLE customers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(250), address VARCHAR(250))";
+// app.get("/getEmployeeById_", (req, res) => {
+//   var sql =
+//     "CREATE TABLE customers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(250), address VARCHAR(250))";
 
-  db.query(sql, (err, results) => {
-    if (err) console.log(err);
-    res.send(results);
-  });
-  //   res.json({ EmployeeName: "Abenzer Kebede" });
-});
+//   db.query(sql, (err, results) => {
+//     if (err) console.log(err);
+//     res.send(results);
+//   });
+// });
 
 app.listen(PORT, () => {
   console.log(`Server is listing on port ${PORT}`);
