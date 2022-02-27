@@ -1,0 +1,24 @@
+{
+  "name": "fetandelivery-mvp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abenikeb/fetanDelivery-mvp.git"
+  },
+  "author": "abenikeb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abenikeb/fetanDelivery-mvp/issues"
+  },
+  "homepage": "https://github.com/abenikeb/fetanDelivery-mvp#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.15"
+  }
+}
