@@ -1,5 +1,5 @@
 require("dotenv").config();
-import { Request } from "express";
+import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { AuthPayLoad } from "../dto";
@@ -24,16 +24,20 @@ export const GenerateSignature = (payload: AuthPayLoad) => {
   return jwt.sign(payload, process.env.JWT_PRIVATE_KEY as string);
 };
 
-export const ValidateSignture = async (req: Request) => {
-  const signture = req.get("Authorization");
+export const ValidateSignture = async (req: Request, res: Response) => {
+  const token = req.get("Authorization");
+  // if (!token) return res.status(401).send("Access Denaid");
+  if (!token) return false;
 
-  if (signture) {
+  try {
     const payload = (await jwt.verify(
-      signture.split(" ")[1],
+      token.split(" ")[1],
       process.env.JWT_PRIVATE_KEY as string
     )) as AuthPayLoad;
+
     req.user = payload;
     return true;
+  } catch (error) {
+    return false;
   }
-  return false;
 };

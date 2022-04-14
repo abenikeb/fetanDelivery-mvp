@@ -10,7 +10,7 @@ import {
   VenderLogin,
   GetOrdersDetail,
   ProcessOrder,
-} from "../controller";
+} from "../controller/VendorController";
 
 import { Authenticate } from "../middleware/CommonAuth";
 import multer from "multer";

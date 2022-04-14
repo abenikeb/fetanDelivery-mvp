@@ -14,7 +14,7 @@ export const Authenticate = async (
   res: Response,
   next: NextFunction
 ) => {
-  const validate = await ValidateSignture(req);
+  const validate = await ValidateSignture(req, res);
 
   if (validate) {
     next();

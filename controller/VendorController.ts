@@ -1,14 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { plainToClass } from "class-transformer";
-
 import { validate } from "class-validator";
-
 import {
   CreateProductInput,
   LoginVandor,
   UpdateVandor,
   UserType,
   UserPayload,
+  OrderStatusState,
 } from "../dto";
 // import { Grocery, Vandor } from "../models";
 import { GenerateSignature, ValidatePassword } from "../utility";
@@ -64,25 +63,24 @@ export const UpdateVendorProfile = async (
   const { name, address_line1, address_line2, email, tel, password } =
     req.body as UpdateVandor;
   const user = req.user as UserPayload;
-  if (user) {
-    let existingVendor = await FindVandor(user.id);
+  if (!user)
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
 
-    if (existingVendor != null) {
-      existingVendor.name = name;
-      existingVendor.address_line1 = address_line1;
-      existingVendor.address_line2 = address_line2;
-      existingVendor.email = email;
-      existingVendor.tel = tel;
-      existingVendor.password = password;
+  let existingVendor = await FindVandor(user.id);
+  if (!existingVendor)
+    return res.status(400).json({ message: "Invalid Vendor!" });
 
-      const savedResult = await existingVendor.save();
-      res.json(savedResult);
-      return;
-    } else {
-      return res.status(400).json({ message: "The Vendor Couldn't Be Found." });
-    }
-  }
-  return res.status(401).json({ message: "Access denied. No token provided." });
+  existingVendor.name = name;
+  existingVendor.address_line1 = address_line1;
+  existingVendor.address_line2 = address_line2;
+  existingVendor.email = email;
+  existingVendor.tel = tel;
+  existingVendor.password = password;
+
+  await existingVendor.save();
+  res.json(existingVendor);
 };
 
 export const UpdateVendorCoverImage = async (
@@ -133,6 +131,9 @@ export const UpdateVendorService = async (
 
   existingVandor.lat = lat;
   existingVandor.lng = lng;
+
+  await existingVandor.save();
+  res.send(existingVandor);
 };
 
 export const AddProduct = async (
@@ -183,7 +184,7 @@ export const AddProduct = async (
 
   vendor.grocery.push(groceryCreate);
   await vendor.save();
-  res.json(vendor);
+  res.status(200).json({ vendor });
 };
 
 export const GetProducts = async (
@@ -198,7 +199,7 @@ export const GetProducts = async (
       .json({ message: "Access denied. No token provided." });
 
   const listProduct = await Grocery.find({ vandorId: user.id });
-  if (!listProduct) return res.json({ Message: "No Product Found" });
+  if (!listProduct) return res.json({ Message: "No Product Found!" });
 
   return res.json(listProduct);
 };
@@ -225,13 +226,12 @@ export const GetOrdersDetail = async (
   res: Response,
   next: NextFunction
 ) => {
-  const orderId = req.params.id;
-  const order = await Order.findById(orderId).populate("items.grocery");
+  const order = await Order.findById(req.params.id).populate("items.grocery");
 
   if (!order)
     return res.status(404).send("The Order with the given ID was not found.");
 
-  res.status(200).json(order);
+  res.status(200).json({ order });
 };
 
 export const ProcessOrder = async (
@@ -239,15 +239,16 @@ export const ProcessOrder = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { orderStatus, remarks, readyTime } = req.body;
+  const { orderStatus } = req.body as any;
 
   let order = await Order.findById(req.params.id).populate("items.grocery");
   order.orderStatus = orderStatus;
+  await order.save();
 
   if (!order)
     return res
       .status(404)
-      .json({ message: "The Order With the Given ID Was Not Found." });
+      .json({ message: "The Order with the given ID was not found." });
 
-  res.status(200).send(await order.save());
+  res.status(200).json({ order: order });
 };

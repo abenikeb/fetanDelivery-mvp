@@ -1,8 +1,21 @@
+import {
+  validate,
+  validateOrReject,
+  Contains,
+  IsInt,
+  Length,
+  IsEmail,
+  IsString,
+  IsNotEmpty,
+  IsFQDN,
+  IsDate,
+  Min,
+  Max,
+} from "class-validator";
+
 export const VAT_PERCENT = 0.15;
 
-import { IsEmail, Length, IsEmpty } from "class-validator";
-
-export class UserType {
+export class CreateUserType {
   @Length(7, 15)
   tel: {
     type: string;
@@ -188,23 +201,36 @@ export class Order {
   created_at: Date = new Date();
   modified_at?: Date;
 
-  constructor(order: Order) {
-    this.netPrice = order.netPrice;
-    this.addedTax = order.addedTax;
-    this.user_id = order.user_id;
-    this.vender_id = order.vender_id;
-    this.payment_via = order.payment_via;
-    this.delivery_boy = order.delivery_boy;
-    this.modified_at = order.modified_at;
+  // constructor(order: Order) {
+  //   this.netPrice = order.netPrice;
+  //   this.addedTax = order.addedTax;
+  //   this.user_id = order.user_id;
+  //   this.vender_id = order.vender_id;
+  //   this.payment_via = order.payment_via;
+  //   this.delivery_boy = order.delivery_boy;
+  //   this.modified_at = order.modified_at;
 
-    this.status = order.status || 1;
-    /** Calculate the default price from the total price */
-    this.grossPrice = GenerateOrderPrice(
-      // Calculate Net Price
-      this.netPrice
-    ).grossPrice;
-    this.remarks = order.remarks;
-  }
+  //   this.status = order.status || 1;
+  //   /** Calculate the default price from the total price */
+  //   this.grossPrice = GenerateOrderPrice(
+  //     // Calculate Net Price
+  //     this.netPrice
+  //   ).grossPrice;
+  //   this.remarks = order.remarks;
+  // }
+}
+export interface Order {
+  netPrice: number;
+  addedTax?: number;
+  grossPrice?: number;
+  remarks?: string;
+  user_id: string;
+  status?: number;
+  vender_id: number;
+  payment_via: string;
+  delivery_boy: number;
+  created_at: Date;
+  modified_at?: Date;
 }
 
 // export class OrderNotification {
