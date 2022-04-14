@@ -28,10 +28,12 @@ export class CreateUserType {
     required: true;
   };
 
-  @Length(7, 50)
+  @IsString()
+  @Length(5, 50)
   first_name?: string;
 
-  @Length(7, 50)
+  @IsString()
+  @Length(2, 50)
   last_name?: string;
 
   @IsEmail()

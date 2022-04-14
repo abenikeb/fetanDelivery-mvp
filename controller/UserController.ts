@@ -9,6 +9,6 @@ export const UserController = async (req: Request, res: Response) => {
     email: email,
     password: password,
   });
-  const result = await user.save();
-  res.send(result);
+  await user.save();
+  res.send(user);
 };
