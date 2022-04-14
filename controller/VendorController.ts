@@ -1,3 +1,5 @@
+/** @format */
+
 import { Request, Response, NextFunction } from "express";
 import { plainToClass } from "class-transformer";
 
@@ -133,6 +135,9 @@ export const UpdateVendorService = async (
 
   existingVandor.lat = lat;
   existingVandor.lng = lng;
+
+  await existingVandor.save();
+  return res.status(200).send(existingVandor);
 };
 
 export const AddProduct = async (
@@ -146,7 +151,7 @@ export const AddProduct = async (
       .status(401)
       .json({ message: "Access denied. No token provided." });
 
-  let vendor = await FindVandor(user.id);
+  const vendor = await FindVandor(user.id);
   if (!vendor) return res.status(400).json({ message: "Invalid Vendor!" });
 
   const files = req.files as [Express.Multer.File];
