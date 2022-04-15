@@ -4,10 +4,12 @@ import { validate } from "class-validator";
 import {
   CreateProductInput,
   LoginVandor,
-  UpdateVandor,
   UserType,
   UserPayload,
+  CreateVendorInput,
   OrderStatusState,
+  VendorPayLoad,
+  VendorType,
 } from "../dto";
 // import { Grocery, Vandor } from "../models";
 import { GenerateSignature, ValidatePassword } from "../utility";
@@ -18,28 +20,31 @@ export const VendorLogin = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { email, password } = <LoginVandor>req.body;
+  const CreateVendorInputs = plainToClass(CreateVendorInput, req.body);
+  const CreateVendorInputsError = await validate(CreateVendorInputs, {
+    validationError: { target: true },
+  });
+  if (CreateVendorInputsError.length > 0)
+    return res.json(CreateVendorInputsError);
+
+  const { email, password } = CreateVendorInputs;
 
   const existingVandor = await FindVandor("", email);
+  if (!existingVandor) return res.status(400).json("User Does't Exist");
 
-  if (existingVandor != null) {
-    const validation = await ValidatePassword(
-      password,
-      existingVandor.password,
-      existingVandor.salt
-    );
-    if (validation) {
-      const signture = GenerateSignature({
-        id: existingVandor._id,
-        email: existingVandor.email,
-        name: existingVandor.name,
-      });
-      return res.json(signture);
-    }
-    return res.status(400).json("Failed in Autentication");
-  } else {
-    return res.status(400).json("User Does't Exist");
-  }
+  const validation = await ValidatePassword(
+    password,
+    existingVandor.password,
+    existingVandor.salt
+  );
+  if (!validation) return res.status(400).json("Failed in Autentication");
+
+  const signture = GenerateSignature({
+    id: existingVandor._id,
+    email: existingVandor.email,
+    name: existingVandor.name,
+  } as VendorPayLoad);
+  return res.status(200).json(signture);
 };
 
 export const GetVendorProfile = async (
@@ -47,12 +52,16 @@ export const GetVendorProfile = async (
   res: Response,
   next: NextFunction
 ) => {
-  const user = req.user;
-  if (user) {
-    const existingVendor = await FindVandor(user.id);
-    return res.json(existingVendor);
-  }
-  return res.status(401).json({ message: "Access denied. No token provided." });
+  const user = req.user as UserPayload;
+  if (!user)
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
+
+  let vendor = await FindVandor(user.id);
+  if (!vendor) return res.status(400).json({ message: "Invalid Vendor!" });
+
+  return res.status(200).json(vendor);
 };
 
 export const UpdateVendorProfile = async (
@@ -61,7 +70,8 @@ export const UpdateVendorProfile = async (
   next: NextFunction
 ) => {
   const { name, address_line1, address_line2, email, tel, password } =
-    req.body as UpdateVandor;
+    req.body as VendorType;
+
   const user = req.user as UserPayload;
   if (!user)
     return res

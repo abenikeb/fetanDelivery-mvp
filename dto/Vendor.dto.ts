@@ -16,7 +16,7 @@ import {
 export class CreateVendorInput {
   @IsNotEmpty()
   @IsString()
-  @Length(5, 50)
+  @Length(3, 250)
   name?: string;
 
   @IsNotEmpty()
@@ -39,9 +39,6 @@ export class CreateVendorInput {
   @IsNotEmpty()
   @Length(5, 20)
   tel?: string;
-
-  @Length(5, 5000)
-  salt?: string;
 
   @Length(5, 250)
   address_line1?: string;
