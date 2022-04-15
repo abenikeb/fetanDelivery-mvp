@@ -190,8 +190,8 @@ export interface OrderPrice {
   grossPrice?: number;
 }
 
-export class Order {
-  netPrice: number;
+export class CreateOrder {
+  netPrice?: number;
   addedTax?: number;
   grossPrice?: number;
   remarks?: string;
