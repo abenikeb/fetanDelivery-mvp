@@ -18,16 +18,10 @@ export const VAT_PERCENT = 0.15;
 export class CreateUserType {
   @IsNotEmpty()
   @Length(7, 15)
-  tel?: {
-    type: string;
-    required: true;
-  };
+  tel: string;
 
   @Length(6, 50)
-  password?: {
-    type: string;
-    required: true;
-  };
+  password: string;
 
   @IsString()
   @Length(5, 50)
@@ -84,20 +78,14 @@ export class CreateUserType {
 }
 
 export interface UserType {
-  tel: {
-    type: string;
-    required: true;
-  };
-  password: {
-    type: string;
-    required: true;
-  };
+  tel: string;
+  password: string;
   first_name?: string;
   last_name?: string;
   email?: string;
   verified?: boolean;
   salt?: string;
-  oto?: string;
+  otp?: string;
   otp_expiry?: Date;
   address_line1?: string;
   address_line2?: string;
@@ -167,6 +155,7 @@ export class EditProfile {
 export interface UserPayload {
   id: number;
   tel: string;
+  verified?: boolean;
 }
 
 // export class OrderInputs {

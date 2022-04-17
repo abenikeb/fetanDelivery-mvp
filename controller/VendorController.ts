@@ -30,14 +30,14 @@ export const VendorLogin = async (
   const { email, password } = CreateVendorInputs;
 
   const existingVandor = await FindVandor("", email);
-  if (!existingVandor) return res.status(400).json("User Does't Exist");
+  if (!existingVandor) return res.status(400).json("Invalid email or password");
 
   const validation = await ValidatePassword(
     password,
     existingVandor.password,
     existingVandor.salt
   );
-  if (!validation) return res.status(400).json("Failed in Autentication");
+  if (!validation) return res.status(400).json("Invalid email or password");
 
   const signture = GenerateSignature({
     id: existingVandor._id,

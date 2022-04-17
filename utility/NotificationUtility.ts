@@ -24,7 +24,7 @@ export const onRequestOtp = async (otp: number, toPhoneNumber: string) => {
     to: `+251${toPhoneNumber}`,
   });
 
-  // return resopnse
+  //return resopnse
   return "Your otp Request Has Been...";
 };
 
