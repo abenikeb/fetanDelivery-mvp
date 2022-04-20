@@ -1,21 +1,21 @@
-import express from "express";
-const router = express.Router();
+// import express from "express";
+// const router = express.Router();
 
-import { getCustomer } from "../controller/CustomerController";
+// import { getCustomer } from "../controller/CustomerController";
 
-/*..............Get All Grocery ................*/
-router.get("/", getCustomer);
+// /*..............Get All Grocery ................*/
+// router.get("/", getCustomer);
 
-// /*..............Get Grocery Services................*/
-// router.get('/:pinCode', GetGroceryAvailablity)
+// // /*..............Get Grocery Services................*/
+// // router.get('/:pinCode', GetGroceryAvailablity)
 
-// /*..............Grocery By Search................*/
-// router.get('/search/:pinCode', SeachGroceries)
+// // /*..............Grocery By Search................*/
+// // router.get('/search/:pinCode', SeachGroceries)
 
-// /*..............Offer By :pincode................*/
-// router.get('/offer/:pinCode', GetCurrentOffer)
+// // /*..............Offer By :pincode................*/
+// // router.get('/offer/:pinCode', GetCurrentOffer)
 
-// /*..............Supermarkrts By ID................*/
-// router.get('/GetsuperMarketById/:id', SuperMarketByID)
+// // /*..............Supermarkrts By ID................*/
+// // router.get('/GetsuperMarketById/:id', SuperMarketByID)
 
-export { router as CustomerRoute };
+// export { router as CustomerRoute };

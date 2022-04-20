@@ -23,59 +23,71 @@ export class CreateUserType {
   @Length(6, 50)
   password: string;
 
-  @IsString()
-  @Length(5, 50)
-  first_name?: string;
-
-  @IsString()
-  @Length(2, 50)
-  last_name?: string;
-
-  @IsEmail()
-  email?: string;
-
-  verified?: boolean;
-  salt?: string;
-  oto?: string;
-  otp_expiry?: Date;
-
-  @Length(5, 250)
-  address_line1?: string;
-
-  @Length(5, 250)
-  address_line2?: string;
-
-  @Length(5, 250)
-  city?: string;
-
-  lat?: number;
-  lng?: number;
-  created_at: Date = new Date();
-  modified_at?: Date;
-
   @IsInt()
   user_group?: number;
-
-  // constructor(UserInfo: any) {
-  //   this.email = UserInfo.email;
-  //   this.tel = UserInfo.tel;
-  //   this.password = UserInfo.password;
-  //   this.first_name = UserInfo.first_name;
-  //   this.last_name = UserInfo.last_name;
-  //   this.verified = UserInfo.verified || true;
-  //   this.salt = UserInfo.salt;
-  //   this.oto = UserInfo.oto;
-  //   this.otp_expiry = UserInfo.otp_expiry;
-  //   this.address_line1 = UserInfo.address_line1;
-  //   this.address_line2 = UserInfo.address_line2;
-  //   this.city = UserInfo.city;
-  //   this.lat = UserInfo.lat;
-  //   this.lng = UserInfo.lng;
-  //   this.created_at = UserInfo.created_at;
-  //   this.modified_at = UserInfo.modified_at;
-  //   this.user_group = UserInfo.user_group;
-  // }
 }
+
+// export class CreateUserType {
+//   @IsNotEmpty()
+//   @Length(7, 15)
+//   tel: string;
+
+//   @Length(6, 50)
+//   password: string;
+
+//   @IsString()
+//   @Length(5, 50)
+//   first_name: string;
+
+//   @IsString()
+//   @Length(2, 50)
+//   last_name: string;
+
+//   @IsEmail()
+//   email: string;
+
+//   verified?: boolean;
+//   salt?: string;
+//   oto?: string;
+//   otp_expiry?: Date;
+
+//   @Length(5, 250)
+//   address_line1?: string;
+
+//   @Length(5, 250)
+//   address_line2?: string;
+
+//   @Length(5, 250)
+//   city?: string;
+
+//   lat?: number;
+//   lng?: number;
+//   created_at: Date = new Date();
+//   modified_at?: Date;
+
+//   @IsInt()
+//   user_group?: number;
+
+//   // constructor(UserInfo: any) {
+//   //   this.email = UserInfo.email;
+//   //   this.tel = UserInfo.tel;
+//   //   this.password = UserInfo.password;
+//   //   this.first_name = UserInfo.first_name;
+//   //   this.last_name = UserInfo.last_name;
+//   //   this.verified = UserInfo.verified || true;
+//   //   this.salt = UserInfo.salt;
+//   //   this.oto = UserInfo.oto;
+//   //   this.otp_expiry = UserInfo.otp_expiry;
+//   //   this.address_line1 = UserInfo.address_line1;
+//   //   this.address_line2 = UserInfo.address_line2;
+//   //   this.city = UserInfo.city;
+//   //   this.lat = UserInfo.lat;
+//   //   this.lng = UserInfo.lng;
+//   //   this.created_at = UserInfo.created_at;
+//   //   this.modified_at = UserInfo.modified_at;
+//   //   this.user_group = UserInfo.user_group;
+//   // }
+// }
 
 export interface UserType {
   tel: string;
@@ -85,7 +97,7 @@ export interface UserType {
   email?: string;
   verified?: boolean;
   salt?: string;
-  otp?: string;
+  otp: string;
   otp_expiry?: Date;
   address_line1?: string;
   address_line2?: string;
@@ -246,6 +258,7 @@ export class CreateOrderType {
   //   this.remarks = order.remarks;
   // }
 }
+
 export interface OrderType {
   netPrice: number;
   addedTax?: number;

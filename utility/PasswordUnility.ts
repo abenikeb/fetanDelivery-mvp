@@ -35,7 +35,7 @@ export const ValidateSignture = async (req: Request, res: Response) => {
       process.env.JWT_PRIVATE_KEY as string
     )) as AuthPayLoad;
 
-    req.user = payload;
+    // req.user = payload;
     return true;
   } catch (error) {
     return false;

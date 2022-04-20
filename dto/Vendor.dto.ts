@@ -17,16 +17,16 @@ export class CreateVendorInput {
   @IsNotEmpty()
   @IsString()
   @Length(3, 250)
-  name?: string;
+  name: string;
 
   @IsNotEmpty()
   @IsEmail()
-  email?: string;
+  email: string;
 
   @IsNotEmpty()
   @IsInt()
   @Min(1)
-  owner_id?: {
+  owner_id: {
     type: Number;
     required: true;
   };
@@ -34,7 +34,7 @@ export class CreateVendorInput {
   @IsNotEmpty()
   @IsString()
   @Length(6, 50)
-  password?: string;
+  password: string;
 
   @IsNotEmpty()
   @Length(5, 20)
@@ -53,6 +53,9 @@ export class CreateVendorInput {
   @Min(0)
   @Max(10)
   rating?: number;
+
+  @IsString()
+  salt: string;
 
   @IsDate()
   created_at?: Date;
