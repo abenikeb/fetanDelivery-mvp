@@ -3,13 +3,12 @@ import { Request, Response, NextFunction } from "express";
 import { maxLength, validate } from "class-validator";
 
 import {
-  UserType,
   CreateUserType,
-  CartItem,
-  EditProfile,
   UserPayload,
+  UserLoginType,
+  UpdateUserType,
+  UserType,
 } from "../dto";
-// import { User } from "../models/User";
 import {
   GenerateOtp,
   GeneratePassword,
@@ -44,13 +43,14 @@ export const UserSignUp = async (
 
   const { tel, password, user_group } = userInputs;
 
+  const existCustomer = await User.findOne({ tel: tel });
+  if (existCustomer.rows.length > 0)
+    return res.status(400).json({ message: "User already registered." });
+  // return res.json({ existCustomer: existCustomer.rows.length });
+
   const salt = await GenerateSalt();
   const userPassword = await GeneratePassword(password, salt);
   const { otp, expiry } = GenerateOtp();
-
-  // const existCustomer = await User.findOne({ tel: tel });
-  // if (existCustomer)
-  //   return res.status(400).json({ message: "User already registered." });
 
   const user = new User({
     tel: tel,
@@ -72,61 +72,61 @@ export const UserSignUp = async (
   } as any);
 
   const result = await user.create();
-  return res.json({ result: result.rows[0] });
-  //  if (!result) return res.json({ message: "Not found" });
+  if (!result) return res.status(400).send("Error Found!");
+
   // // send otp to customer
   // await onRequestOtp(otp, tel);
 
-  //generate signture
-  // const signture = GenerateSignature({
-  //   id: result.id,
-  //   tel: result.tel,
-  //   verified: result.verified,
-  // });
+  // generate signture
+  const signture = GenerateSignature({
+    id: result.rows[0].id,
+    tel: result.rows[0].tel,
+    verified: result.rows[0].verified,
+  } as UserPayload);
 
-  // return res
-  //   .header("x-auth-token", signture)
-  //   .header("access-control-expose-headers", "x-auth-token")
-  //   .json({
-  //     signture: signture,
-  //     otp: otp,
-  //     verified: result.verified,
-  //     tel: result.tel,
-  //   });
+  return res
+    .header("x-auth-token", signture)
+    .header("access-control-expose-headers", "x-auth-token")
+    .json({
+      signture: signture,
+      otp: otp,
+      verified: result.rows[0].verified,
+      tel: result.rows[0].tel,
+    });
 };
 
-// export const UserLogin = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   const userInputs = plainToClass(CreateUserType, req.body);
-//   const userInputErrors = await validate(userInputs, {
-//     validationError: { target: true },
-//   });
-//   if (userInputErrors.length > 0) {
-//     return res.status(400).json(userInputErrors);
-//   }
+export const UserLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const userInputs = plainToClass(UserLoginType, req.body);
+  const userInputErrors = await validate(userInputs, {
+    validationError: { target: true },
+  });
+  if (userInputErrors.length > 0) {
+    return res.status(400).json(userInputErrors);
+  }
 
-//   const { tel, password } = userInputs;
+  const { tel, password } = userInputs;
 
-//   const existUser = await User.findOne({ tel: tel });
-//   if (!existUser) return res.status(400).json("Invalid phone no or password");
+  const existUser = await User.findOne({ tel: tel });
+  if (!existUser) return res.status(400).json("Invalid phone no or password");
 
-//   const validPassword = await ValidatePassword(
-//     password,
-//     existUser.password,
-//     existUser.salt
-//   );
+  const validPassword = await ValidatePassword(
+    password,
+    existUser.rows[0].password,
+    existUser.rows[0].salt
+  );
 
-//   if (!validPassword) return res.status(400).json("Invalid email or password");
+  if (!validPassword) return res.status(400).json("Invalid email or password");
 
-//   const signture = GenerateSignature({
-//     id: existUser.id,
-//     tel: existUser.tel,
-//   });
-//   res.status(200).json(signture);
-// };
+  const signture = GenerateSignature({
+    id: existUser.rows[0].id,
+    tel: existUser.rows[0].tel,
+  });
+  res.status(200).json(signture);
+};
 
 // export const UserVerify = async (
 //   req: Request,
@@ -183,67 +183,68 @@ export const UserSignUp = async (
 //   res.status(200).json({ message: "OTP is Sent via Your Phone" });
 // };
 
-// export const GetUserProfile = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   const user = req.user as UserPayload;
-//   if (!user)
-//     return res
-//       .status(401)
-//       .json({ message: "Access denied. No token provided." });
+export const GetUserProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user as UserPayload;
+  if (!user)
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
 
-//   let profile = await User.findById(user.id);
-//   if (!profile) return res.status(400).json({ message: "Invalid profile!" });
-//   return res.status(200).json(profile);
-// };
+  let profile = await User.findById({ id: user.id });
+  if (!profile) return res.status(400).json({ message: "Invalid profile!" });
 
-// export const EditUserProfile = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   const userInputs = plainToClass(CreateUserType, req.body);
-//   const inputErrors = await validate(userInputs, {
-//     validationError: { target: true },
-//   });
-//   if (inputErrors.length > 0) {
-//     return res.status(400).json(inputErrors);
-//   }
+  return res.status(200).json(profile.rows[0]);
+};
 
-//   const {
-//     first_name,
-//     last_name,
-//     email,
-//     address_line1,
-//     address_line2,
-//     city,
-//     lat,
-//     lng,
-//   } = userInputs;
+export const EditUserProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const userInputs = plainToClass(UpdateUserType, req.body);
+  const inputErrors = await validate(userInputs, {
+    validationError: { target: true },
+  });
+  if (inputErrors.length > 0) {
+    return res.status(400).json(inputErrors);
+  }
 
-//   const user = req.user as UserPayload;
-//   if (!user)
-//     return res
-//       .status(401)
-//       .json({ message: "Access denied. No token provided." });
+  const {
+    first_name,
+    last_name,
+    email,
+    address_line1,
+    address_line2,
+    city,
+    lat,
+    lng,
+  } = <UserType>userInputs;
 
-//   let profile = await User.findById(user.id);
-//   if (!profile) return res.status(400).json({ message: "Invalid Vendor!" });
+  const user = req.user as UserPayload;
+  if (!user)
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
 
-//   profile.first_name = first_name;
-//   profile.last_name = last_name;
-//   profile.email = email;
-//   profile.address_line1 = address_line1;
-//   profile.address_line2 = address_line2;
-//   profile.city = city;
-//   profile.lat = lat;
-//   profile.lng = lng;
+  let profile = (await User.findById({ id: user.id })) as any;
+  if (!profile) return res.status(400).json({ message: "Invalid Vendor!" });
 
-//   await profile.save();
-//   res.json(profile);
-// };
+  profile.rows[0].first_name = first_name;
+  profile.rows[0].last_name = last_name;
+  profile.rows[0].email = email;
+  profile.rows[0].address_line1 = address_line1;
+  profile.rows[0].address_line2 = address_line2;
+  profile.rows[0].city = city;
+  profile.rows[0].lat = lat;
+  profile.rows[0].lng = lng;
+
+  await User.save(profile);
+  res.json(profile.rows[0]);
+};
 
 // // offer Section
 

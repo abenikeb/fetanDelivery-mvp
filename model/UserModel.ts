@@ -1,5 +1,5 @@
 import pool from "../service/DataBase";
-import { UserType } from "../dto";
+import { CreateUserType, UserType } from "../dto";
 
 export class User {
   tel: string;
@@ -38,44 +38,55 @@ export class User {
     this.modified_at = UserInfo.modified_at;
     this.user_group = UserInfo.user_group;
   }
-  findOne() {}
   create() {
-    const result = pool.query(
-      `INSERT INTO users (tel, password, first_name, last_name, email, verified, salt,
-                otp, otp_expiry, address_line1, address_line2, city, lat, lng, created_at,
-                modified_at, user_group) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-                $11, $12, $13, $14, $15, $16, $17) RETURNING *`,
-      [
-        this.tel,
-        this.password,
-        this.first_name,
-        this.last_name,
-        this.email,
-        this.verified,
-        this.salt,
-        this.otp,
-        this.otp_expiry,
-        this.address_line1,
-        this.address_line2,
-        this.city,
-        this.lat,
-        this.lng,
-        this.created_at,
-        this.modified_at,
-        this.user_group,
-      ]
-    );
-    //   (error, results) => {
-    //     if (error) {
-    //       throw error;
-    //     }
-    //     return results.rows;
-    //   }
-    // );
+    const _sql = `INSERT INTO users (tel, password, first_name, last_name, email, verified, salt,otp, otp_expiry,
+                  address_line1, address_line2, city, lat, lng, created_at, modified_at, user_group)
+                  VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING *`;
+
+    const result = pool.query(_sql, [
+      this.tel,
+      this.password,
+      this.first_name,
+      this.last_name,
+      this.email,
+      this.verified,
+      this.salt,
+      this.otp,
+      this.otp_expiry,
+      this.address_line1,
+      this.address_line2,
+      this.city,
+      this.lat,
+      this.lng,
+      this.created_at,
+      this.modified_at,
+      this.user_group,
+    ]);
     return result;
   }
-  findById() {}
-  save() {
-    return true;
+
+  static findOne(payload: { tel: string }) {
+    const sql = `SELECT * FROM users WHERE tel = $1`;
+    return pool.query(sql, [payload.tel]);
+    // return result.rows.length > 0 ? true : false;
+  }
+
+  static findById(payload: { id: number }) {
+    const sql = `SELECT * FROM users WHERE id = $1`;
+    return pool.query(sql, [payload.id]);
+  }
+  static save(profile: UserType) {
+    const sql = `UPDATE users SET first_name = $1, last_name = $2, email = $3, address_line1 = $4, address_line2 = $5,
+                  city = $6, lat = $7, lng = $8 RETURNING *`;
+    return pool.query(sql, [
+      profile.first_name,
+      profile.last_name,
+      profile.email,
+      profile.address_line1,
+      profile.address_line2,
+      profile.city,
+      profile.lat,
+      profile.lng,
+    ]);
   }
 }

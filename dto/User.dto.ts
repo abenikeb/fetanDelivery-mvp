@@ -27,67 +27,86 @@ export class CreateUserType {
   user_group?: number;
 }
 
-// export class CreateUserType {
-//   @IsNotEmpty()
-//   @Length(7, 15)
-//   tel: string;
+export class UpdateUserType {
+  @IsString()
+  @Length(5, 50)
+  first_name: string;
 
-//   @Length(6, 50)
-//   password: string;
+  @IsString()
+  @Length(2, 50)
+  last_name: string;
 
-//   @IsString()
-//   @Length(5, 50)
+  @IsEmail()
+  email: string;
+
+  @Length(5, 250)
+  address_line1?: string;
+
+  @Length(5, 250)
+  address_line2?: string;
+
+  @Length(5, 250)
+  city?: string;
+}
+
+// export class EditProfile {
+//   @Length(7, 50)
 //   first_name: string;
 
-//   @IsString()
-//   @Length(2, 50)
+//   @Length(7, 50)
 //   last_name: string;
 
 //   @IsEmail()
 //   email: string;
 
-//   verified?: boolean;
-//   salt?: string;
-//   oto?: string;
-//   otp_expiry?: Date;
+//   @Length(7, 15)
+//   tel: string;
 
-//   @Length(5, 250)
-//   address_line1?: string;
+//   @Length(6, 250)
+//   password: string;
 
-//   @Length(5, 250)
-//   address_line2?: string;
+//   verified: boolean;
+//   salt: string;
+//   oto: string;
+//   otp_expiry: Date;
+//   address_line1: string;
+//   address_line2: string;
+//   city: string;
+//   lat: number;
+//   lng: number;
+//   created_at: Date;
+//   modified_at: Date;
+//   user_group: number;
 
-//   @Length(5, 250)
-//   city?: string;
-
-//   lat?: number;
-//   lng?: number;
-//   created_at: Date = new Date();
-//   modified_at?: Date;
-
-//   @IsInt()
-//   user_group?: number;
-
-//   // constructor(UserInfo: any) {
-//   //   this.email = UserInfo.email;
-//   //   this.tel = UserInfo.tel;
-//   //   this.password = UserInfo.password;
-//   //   this.first_name = UserInfo.first_name;
-//   //   this.last_name = UserInfo.last_name;
-//   //   this.verified = UserInfo.verified || true;
-//   //   this.salt = UserInfo.salt;
-//   //   this.oto = UserInfo.oto;
-//   //   this.otp_expiry = UserInfo.otp_expiry;
-//   //   this.address_line1 = UserInfo.address_line1;
-//   //   this.address_line2 = UserInfo.address_line2;
-//   //   this.city = UserInfo.city;
-//   //   this.lat = UserInfo.lat;
-//   //   this.lng = UserInfo.lng;
-//   //   this.created_at = UserInfo.created_at;
-//   //   this.modified_at = UserInfo.modified_at;
-//   //   this.user_group = UserInfo.user_group;
-//   // }
+//   constructor(UserInfo: any) {
+//     this.email = UserInfo.email;
+//     this.tel = UserInfo.tel;
+//     this.password = UserInfo.password;
+//     this.first_name = UserInfo.first_name;
+//     this.last_name = UserInfo.last_name;
+//     this.verified = UserInfo.verified;
+//     this.salt = UserInfo.salt;
+//     this.oto = UserInfo.oto;
+//     this.otp_expiry = UserInfo.otp_expiry;
+//     this.address_line1 = UserInfo.address_line1;
+//     this.address_line2 = UserInfo.address_line2;
+//     this.city = UserInfo.city;
+//     this.lat = UserInfo.lat;
+//     this.lng = UserInfo.lng;
+//     this.created_at = UserInfo.created_at;
+//     this.modified_at = UserInfo.modified_at;
+//     this.user_group = UserInfo.user_group;
+//   }
 // }
+
+export class UserLoginType {
+  @IsNotEmpty()
+  @Length(7, 15)
+  tel: string;
+
+  @Length(6, 50)
+  password: string;
+}
 
 export interface UserType {
   tel: string;
@@ -364,4 +383,47 @@ export const GenerateOrderPrice = (netPrice: number): OrderPrice => {
 //     this.modified_at = UserInfo.modified_at;
 //     this.user_group = UserInfo.user_group;
 //   }
+// }
+
+// export class UpdateUserType {
+//   @IsNotEmpty()
+//   @Length(7, 15)
+//   tel: string;
+
+//   @Length(6, 50)
+//   password: string;
+
+//   @IsString()
+//   @Length(5, 50)
+//   first_name: string;
+
+//   @IsString()
+//   @Length(2, 50)
+//   last_name: string;
+
+//   @IsEmail()
+//   email: string;
+
+//   verified?: boolean;
+//   salt?: string;
+//   oto?: string;
+//   otp_expiry?: Date;
+
+//   @Length(5, 250)
+//   address_line1?: string;
+
+//   @Length(5, 250)
+//   address_line2?: string;
+
+//   @Length(5, 250)
+//   city?: string;
+
+//   lat?: number;
+//   lng?: number;
+//   created_at: Date = new Date();
+//   modified_at?: Date;
+
+//   @IsInt()
+//   user_group?: number;
+
 // }

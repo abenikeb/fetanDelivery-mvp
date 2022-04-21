@@ -13,9 +13,9 @@ export const GeneratePassword = async (password?: string, salt?: string) => {
 };
 
 export const ValidatePassword = async (
-  enteredPassword?: string,
-  savedPassword?: string,
-  salt?: string
+  enteredPassword: string,
+  savedPassword: string,
+  salt: string
 ) => {
   return (await GeneratePassword(enteredPassword, salt)) === savedPassword;
 };
@@ -24,7 +24,7 @@ export const GenerateSignature = (payload: AuthPayLoad) => {
   return jwt.sign(payload, process.env.JWT_PRIVATE_KEY as string);
 };
 
-export const ValidateSignture = async (req: Request, res: Response) => {
+export const ValidateSignture = async (req: any, res: Response) => {
   const token = req.get("Authorization");
   // if (!token) return res.status(401).send("Access Denaid");
   if (!token) return false;
@@ -32,10 +32,10 @@ export const ValidateSignture = async (req: Request, res: Response) => {
   try {
     const payload = (await jwt.verify(
       token.split(" ")[1],
-      process.env.JWT_PRIVATE_KEY as string
+      process.env.JWT_PRIVATE_KEY as any
     )) as AuthPayLoad;
 
-    // req.user = payload;
+    req.user = payload;
     return true;
   } catch (error) {
     return false;

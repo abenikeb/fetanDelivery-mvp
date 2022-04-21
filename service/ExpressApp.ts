@@ -1,4 +1,5 @@
-import express, { Application } from "express";
+import express, { Application, Request } from "express";
+
 import bodyParser from "body-parser";
 import path from "path";
 import {
@@ -24,3 +25,7 @@ export default async (app: Application) => {
 
   return app;
 };
+
+// export interface IGetUserAuthInfoRequest extends Request {
+//   user?: string; // or any other type
+// }
