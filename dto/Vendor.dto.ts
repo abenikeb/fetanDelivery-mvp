@@ -26,10 +26,7 @@ export class CreateVendorInput {
   @IsNotEmpty()
   @IsInt()
   @Min(1)
-  owner_id: {
-    type: Number;
-    required: true;
-  };
+  owner_id: Number;
 
   @IsNotEmpty()
   @IsString()
@@ -38,10 +35,10 @@ export class CreateVendorInput {
 
   @IsNotEmpty()
   @Length(5, 20)
-  tel?: string;
+  tel: string;
 
   @Length(5, 250)
-  address_line1?: string;
+  address_line1: string;
 
   @Length(5, 250)
   address_line2?: string;
@@ -49,28 +46,25 @@ export class CreateVendorInput {
   @Length(5, 50)
   city?: string;
 
-  @IsInt()
-  @Min(0)
-  @Max(10)
-  rating?: number;
+  // @IsInt()
+  // @Min(0)
+  // @Max(10)
+  // rating?: number;
 
-  @IsString()
-  salt: string;
+  // @IsString()
+  // salt: string;
 
-  @IsDate()
-  created_at?: Date;
+  // @IsDate()
+  // created_at?: Date;
 
-  @IsDate()
-  modified_at?: Date = new Date();
+  // @IsDate()
+  // modified_at?: Date = new Date();
 }
 
 export interface VendorType {
   name: string;
   email: string;
-  owner_id: {
-    type: Number;
-    required: true;
-  };
+  owner_id: number;
   password: string;
   tel: string;
   salt: string;

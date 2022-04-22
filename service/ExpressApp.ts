@@ -3,7 +3,7 @@ import express, { Application, Request } from "express";
 import bodyParser from "body-parser";
 import path from "path";
 import {
-  // AdminRoute,
+  AdminRoute,
   UserRoute,
   // CustomerRoute,
   // DeliveryRoute,
@@ -17,8 +17,8 @@ export default async (app: Application) => {
   app.use("/images", express.static(path.join(__dirname, "images")));
 
   // app.use("/", CustomerRoute);
-  // app.use("/admin", AdminRoute);
-  app.use("/user", UserRoute);
+  app.use("/admin/api", AdminRoute);
+  app.use("/user/api", UserRoute);
   // app.use("/delivery", DeliveryRoute);
   // app.use("/vendor", VendorRoute);
   app.use(error);

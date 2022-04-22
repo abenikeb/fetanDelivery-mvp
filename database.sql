@@ -1,35 +1,12 @@
-create table table_name(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    price NUMERIC(19,2) NOT NULL,
-    car_id BIGINT NOT NULL REFERENCES car (id),
-    UNIQUE(car_id)
-);
-
-create table car(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
-)
-
-insert into car(name) values('Desire');
-
-
-
-CREATE TYPE "products_status" AS ENUM (
-  'out_of_stock',
-  'in_stock',
-  'running_low'
-);
-
 CREATE TABLE "users_group" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "name" varchar,
   "desc" varchar
 );
 
 CREATE TABLE "users" (
-  "id" SERIAL PRIMARY KEY,
-  "first_name" varchar(50) NOT NULL,
+  "id" BIGSERIAL PRIMARY KEY,
+  "first_name" varchar NOT NULL,
   "last_name" varchar NOT NULL,
   "verified" boolean,
   "email" varchar,
@@ -48,8 +25,15 @@ CREATE TABLE "users" (
   "user_group" int
 );
 
+CREATE TABLE "products_status" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "out_of_stock" int,
+  "in_stock" int,
+  "running_low" varchar
+);
+
 CREATE TABLE "product_categories" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
   "desc" text NOT NULL,
   "created_at" timestamp,
@@ -57,14 +41,14 @@ CREATE TABLE "product_categories" (
 );
 
 CREATE TABLE "product_inventories" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "quantity" int,
   "created_at" timestamp,
   "modified_at" timestamp
 );
 
 CREATE TABLE "product_shipping" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
   "desc" text NOT NULL,
   "created_at" timestamp,
@@ -72,15 +56,17 @@ CREATE TABLE "product_shipping" (
 );
 
 CREATE TABLE "products" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "name" varchar,
   "desc" text,
   "category_id" int NOT NULL,
   "inventory_id" int,
   "shipping_id" int,
   "price" numeric(10,2) NOT NULL,
-  "status" products_status,
+  "status" int,
   "tag_id" int,
+  "tag_id2" int,
+  "tag_id3" int,
   "vender_id" int UNIQUE,
   "rating" int,
   "created_at" date DEFAULT (now()),
@@ -88,7 +74,7 @@ CREATE TABLE "products" (
 );
 
 CREATE TABLE "product_tags" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
   "desc" text NOT NULL,
   "created_at" timestamp,
@@ -96,26 +82,26 @@ CREATE TABLE "product_tags" (
 );
 
 CREATE TABLE "venders" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
-  "owner" varchar NOT NULL,
+  "owner_id" int NOT NULL,
   "email" varchar,
   "tel" varchar NOT NULL,
-  "password" text,
+  "password" text NOT NULL,
   "salt" text,
   "service_available" boolean,
   "rating" int,
   "address_line1" varchar,
   "address_line2" varchar,
   "city" varchar,
-  "lat" numeric(2,6),
-  "lng" numeric(2,6),
+  "lat" numeric(8,6),
+  "lng" numeric(8,6),
   "created_at" timestamp,
   "modified_at" timestamp
 );
 
 CREATE TABLE "order_status" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
   "desc" text,
   "created_at" timestamp,
@@ -123,57 +109,79 @@ CREATE TABLE "order_status" (
 );
 
 CREATE TABLE "orders" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "net_price" numeric(10,2) NOT NULL,
   "add_tax" numeric(10,2) NOT NULL,
   "gross_price" numeric(10,2) NOT NULL,
   "remarks" text,
-  "user_id" int UNIQUE NOT NULL,
+  "user_id" int NOT NULL,
   "status" int,
-  "vender_id" int UNIQUE NOT NULL,
+  "vender_id" int NOT NULL,
   "payment_via" varcher,
-  "delivery_boy" int NOT NULL,
+  "delivery_boy" int,
   "created_at" timestamp,
   "modified_at" timestamp
 );
 
 CREATE TABLE "order_items" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "order_id" int,
   "product_id" int,
   "quantity" int DEFAULT 1
 );
 
 CREATE TABLE "notifications" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "message" varcher NOT NULL,
   "isRead" boolean,
   "type" varcher NOT NULL,
-  "receiverId" int,
+  "receiver_id" int,
   "status" int,
   "created_at" timestamp,
   "modified_at" timestamp
 );
 
 CREATE TABLE "chat" (
-  "id" SERIAL PRIMARY KEY,
-  "from" varcher NOT NULL,
-  "to" varcher NOT NULL,
+  "id" BIGSERIAL PRIMARY KEY,
+  "from" int NOT NULL,
+  "to" int NOT NULL,
   "message" text NOT NULL,
   "created_at" timestamp,
   "modified_at" timestamp
 );
 
 CREATE TABLE "cart" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "product_id" int,
   "quantity" int DEFAULT 1,
   "user_id" int UNIQUE NOT NULL
 );
 
+CREATE INDEX "vender_id" ON "products" ("name", "vender_id");
+
+CREATE UNIQUE INDEX ON "products" ("id");
+
+CREATE INDEX ON "venders" ("owner_id");
+
+CREATE INDEX ON "orders" ("id", "user_id");
+
+CREATE INDEX ON "notifications" ("receiver_id");
+
+CREATE INDEX ON "chat" ("from", "to");
+
+COMMENT ON COLUMN "products_status"."running_low" IS 'less than 10';
+
+COMMENT ON COLUMN "products"."shipping_id" IS 'kg l ml...';
+
+COMMENT ON COLUMN "notifications"."status" IS '1 or 2';
+
 ALTER TABLE "users" ADD FOREIGN KEY ("user_group") REFERENCES "users_group" ("id");
 
 ALTER TABLE "products" ADD FOREIGN KEY ("tag_id") REFERENCES "product_tags" ("id");
+
+ALTER TABLE "products" ADD FOREIGN KEY ("tag_id2") REFERENCES "product_tags" ("id");
+
+ALTER TABLE "products" ADD FOREIGN KEY ("tag_id3") REFERENCES "product_tags" ("id");
 
 ALTER TABLE "products" ADD FOREIGN KEY ("vender_id") REFERENCES "venders" ("id");
 
@@ -182,6 +190,10 @@ ALTER TABLE "products" ADD FOREIGN KEY ("category_id") REFERENCES "product_categ
 ALTER TABLE "products" ADD FOREIGN KEY ("inventory_id") REFERENCES "product_inventories" ("id");
 
 ALTER TABLE "products" ADD FOREIGN KEY ("shipping_id") REFERENCES "product_shipping" ("id");
+
+ALTER TABLE "products" ADD FOREIGN KEY ("status") REFERENCES "product_shipping" ("id");
+
+ALTER TABLE "venders" ADD FOREIGN KEY ("owner_id") REFERENCES "users" ("id");
 
 ALTER TABLE "orders" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
@@ -195,7 +207,7 @@ ALTER TABLE "order_items" ADD FOREIGN KEY ("order_id") REFERENCES "orders" ("id"
 
 ALTER TABLE "order_items" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
 
-ALTER TABLE "notifications" ADD FOREIGN KEY ("receiverId") REFERENCES "users" ("id");
+ALTER TABLE "notifications" ADD FOREIGN KEY ("receiver_id") REFERENCES "users" ("id");
 
 ALTER TABLE "chat" ADD FOREIGN KEY ("from") REFERENCES "users" ("id");
 
@@ -204,21 +216,3 @@ ALTER TABLE "chat" ADD FOREIGN KEY ("to") REFERENCES "users" ("id");
 ALTER TABLE "cart" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
 
 ALTER TABLE "cart" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
-
-CREATE INDEX "vender_id" ON "products" ("name", "vender_id");
-
-CREATE UNIQUE INDEX ON "products" ("id");
-
-CREATE UNIQUE INDEX ON "venders" ("owner");
-
-CREATE UNIQUE INDEX ON "orders" ("user_id");
-
-CREATE INDEX ON "notifications" ("receiverId");
-
-CREATE INDEX ON "chat" ("from", "to");
-
-COMMENT ON COLUMN "products"."shipping_id" IS 'kg l ml...';
-
-COMMENT ON COLUMN "notifications"."status" IS '1 or 2';
-
-

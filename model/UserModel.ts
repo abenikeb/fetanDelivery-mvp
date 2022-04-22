@@ -75,9 +75,10 @@ export class User {
     const sql = `SELECT * FROM users WHERE id = $1`;
     return pool.query(sql, [payload.id]);
   }
+
   static save(profile: UserType) {
     const sql = `UPDATE users SET first_name = $1, last_name = $2, email = $3, address_line1 = $4, address_line2 = $5,
-                  city = $6, lat = $7, lng = $8 RETURNING *`;
+                  city = $6, lat = $7, lng = $8 WHERE id = $9 RETURNING *`;
     return pool.query(sql, [
       profile.first_name,
       profile.last_name,
@@ -87,6 +88,7 @@ export class User {
       profile.city,
       profile.lat,
       profile.lng,
+      profile.id,
     ]);
   }
 }

@@ -27,7 +27,7 @@ export class CreateUserType {
   user_group?: number;
 }
 
-export class UpdateUserType {
+export class EditProfile {
   @IsString()
   @Length(5, 50)
   first_name: string;
@@ -49,57 +49,7 @@ export class UpdateUserType {
   city?: string;
 }
 
-// export class EditProfile {
-//   @Length(7, 50)
-//   first_name: string;
-
-//   @Length(7, 50)
-//   last_name: string;
-
-//   @IsEmail()
-//   email: string;
-
-//   @Length(7, 15)
-//   tel: string;
-
-//   @Length(6, 250)
-//   password: string;
-
-//   verified: boolean;
-//   salt: string;
-//   oto: string;
-//   otp_expiry: Date;
-//   address_line1: string;
-//   address_line2: string;
-//   city: string;
-//   lat: number;
-//   lng: number;
-//   created_at: Date;
-//   modified_at: Date;
-//   user_group: number;
-
-//   constructor(UserInfo: any) {
-//     this.email = UserInfo.email;
-//     this.tel = UserInfo.tel;
-//     this.password = UserInfo.password;
-//     this.first_name = UserInfo.first_name;
-//     this.last_name = UserInfo.last_name;
-//     this.verified = UserInfo.verified;
-//     this.salt = UserInfo.salt;
-//     this.oto = UserInfo.oto;
-//     this.otp_expiry = UserInfo.otp_expiry;
-//     this.address_line1 = UserInfo.address_line1;
-//     this.address_line2 = UserInfo.address_line2;
-//     this.city = UserInfo.city;
-//     this.lat = UserInfo.lat;
-//     this.lng = UserInfo.lng;
-//     this.created_at = UserInfo.created_at;
-//     this.modified_at = UserInfo.modified_at;
-//     this.user_group = UserInfo.user_group;
-//   }
-// }
-
-export class UserLoginType {
+export class CreateUserLogin {
   @IsNotEmpty()
   @Length(7, 15)
   tel: string;
@@ -109,6 +59,7 @@ export class UserLoginType {
 }
 
 export interface UserType {
+  id: number;
   tel: string;
   password: string;
   first_name?: string;
@@ -126,61 +77,6 @@ export interface UserType {
   created_at?: Date;
   modified_at?: Date;
   user_group: number;
-}
-
-export class CreateUserLogin {
-  @Length(7, 15)
-  tel: string;
-
-  @Length(6, 250)
-  password: string;
-
-  constructor(UserInfo: any) {
-    this.tel = UserInfo.tel;
-    this.password = UserInfo.password;
-  }
-}
-
-export class EditProfile {
-  @Length(7, 50)
-  first_name: string;
-
-  @Length(7, 50)
-  last_name: string;
-
-  @IsEmail()
-  email: string;
-
-  @Length(7, 15)
-  tel: string;
-
-  @Length(6, 250)
-  password: string;
-
-  address_line1: string;
-  address_line2: string;
-  city: string;
-  lat?: number;
-  lng?: number;
-  created_at: Date;
-  modified_at: Date;
-  user_group: number;
-
-  constructor(UserInfo: any) {
-    this.email = UserInfo.email;
-    this.tel = UserInfo.tel;
-    this.password = UserInfo.password;
-    this.first_name = UserInfo.first_name;
-    this.last_name = UserInfo.last_name;
-    this.address_line1 = UserInfo.address_line1;
-    this.address_line2 = UserInfo.address_line2;
-    this.city = UserInfo.city;
-    this.lat = UserInfo.lat;
-    this.lng = UserInfo.lng;
-    this.created_at = UserInfo.created_at;
-    this.modified_at = UserInfo.modified_at;
-    this.user_group = UserInfo.user_group;
-  }
 }
 
 export interface UserPayload {
@@ -247,13 +143,13 @@ export interface OrderPrice {
 }
 
 export class CreateOrderType {
-  netPrice?: number;
+  netPrice: number;
   addedTax?: number;
   grossPrice?: number;
   remarks?: string;
-  user_id?: string;
-  status?: number;
-  vender_id?: number;
+  user_id: string;
+  status: number;
+  vender_id: number;
   payment_via?: string;
   delivery_boy?: number;
   created_at: Date = new Date();

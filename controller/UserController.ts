@@ -3,10 +3,10 @@ import { Request, Response, NextFunction } from "express";
 import { maxLength, validate } from "class-validator";
 
 import {
-  CreateUserType,
   UserPayload,
-  UserLoginType,
-  UpdateUserType,
+  CreateUserType,
+  CreateUserLogin,
+  EditProfile,
   UserType,
 } from "../dto";
 import {
@@ -60,7 +60,7 @@ export const UserSignUp = async (
     email: "",
     verified: false,
     salt: salt,
-    oto: otp,
+    otp: otp,
     otp_expiry: expiry,
     address_line1: "",
     address_line2: "",
@@ -100,7 +100,7 @@ export const UserLogin = async (
   res: Response,
   next: NextFunction
 ) => {
-  const userInputs = plainToClass(UserLoginType, req.body);
+  const userInputs = plainToClass(CreateUserLogin, req.body);
   const userInputErrors = await validate(userInputs, {
     validationError: { target: true },
   });
@@ -205,7 +205,7 @@ export const EditUserProfile = async (
   res: Response,
   next: NextFunction
 ) => {
-  const userInputs = plainToClass(UpdateUserType, req.body);
+  const userInputs = plainToClass(EditProfile, req.body);
   const inputErrors = await validate(userInputs, {
     validationError: { target: true },
   });
@@ -233,17 +233,18 @@ export const EditUserProfile = async (
   let profile = (await User.findById({ id: user.id })) as any;
   if (!profile) return res.status(400).json({ message: "Invalid Vendor!" });
 
-  profile.rows[0].first_name = first_name;
-  profile.rows[0].last_name = last_name;
-  profile.rows[0].email = email;
-  profile.rows[0].address_line1 = address_line1;
-  profile.rows[0].address_line2 = address_line2;
-  profile.rows[0].city = city;
-  profile.rows[0].lat = lat;
-  profile.rows[0].lng = lng;
+  profile = profile.rows[0];
+  profile.first_name = first_name;
+  profile.last_name = last_name;
+  profile.email = email;
+  profile.address_line1 = address_line1;
+  profile.address_line2 = address_line2;
+  profile.city = city;
+  profile.lat = lat;
+  profile.lng = lng;
 
-  await User.save(profile);
-  res.json(profile.rows[0]);
+  const result = await User.save(profile);
+  res.json(result.rows[0]);
 };
 
 // // offer Section
