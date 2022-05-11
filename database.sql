@@ -18,8 +18,8 @@ CREATE TABLE "users" (
   "address_line1" varchar,
   "address_line2" varchar,
   "city" varchar,
-  "lat" numeric(2,6),
-  "lng" numeric(2,6),
+  "lat" numeric(8,6),
+  "lng" numeric(8,6),
   "created_at" timestamp,
   "modified_at" timestamp,
   "user_group" int
@@ -35,7 +35,7 @@ CREATE TABLE "products_status" (
 CREATE TABLE "product_categories" (
   "id" BIGSERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
-  "desc" text NOT NULL,
+  "desc" text,
   "created_at" timestamp,
   "modified_at" timestamp
 );
@@ -50,7 +50,7 @@ CREATE TABLE "product_inventories" (
 CREATE TABLE "product_shipping" (
   "id" BIGSERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
-  "desc" text NOT NULL,
+  "desc" text,
   "created_at" timestamp,
   "modified_at" timestamp
 );
@@ -67,7 +67,7 @@ CREATE TABLE "products" (
   "tag_id" int,
   "tag_id2" int,
   "tag_id3" int,
-  "vender_id" int UNIQUE,
+  "vender_id" int,
   "rating" int,
   "created_at" date DEFAULT (now()),
   "modified_at" date DEFAULT (now())
@@ -76,7 +76,7 @@ CREATE TABLE "products" (
 CREATE TABLE "product_tags" (
   "id" BIGSERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
-  "desc" text NOT NULL,
+  "desc" text,
   "created_at" timestamp,
   "modified_at" timestamp
 );
@@ -111,8 +111,8 @@ CREATE TABLE "order_status" (
 CREATE TABLE "orders" (
   "id" BIGSERIAL PRIMARY KEY,
   "net_price" numeric(10,2) NOT NULL,
-  "add_tax" numeric(10,2) NOT NULL,
-  "gross_price" numeric(10,2) NOT NULL,
+  "add_tax" numeric(10,2),
+  "gross_price" numeric(10,2),
   "remarks" text,
   "user_id" int NOT NULL,
   "status" int,
