@@ -26,7 +26,7 @@ export const GenerateSignature = (payload: AuthPayLoad) => {
 
 export const ValidateSignture = async (req: any, res: Response) => {
   const token = req.get("Authorization");
-  // if (!token) return res.status(401).send("Access Denaid");
+  // if (!token) return res.status(401).json({message:"Access denied. No token provided."});
   if (!token) return false;
 
   try {

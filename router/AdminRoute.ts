@@ -8,10 +8,11 @@ import {
   //   GetVanndors,
   //   VerifyDeliveryBoys,
 } from "../controller";
+import { Authenticate, AdminAuth } from "../middleware";
 
 const router = express.Router();
 
-router.post("/vendor", CreateVendor);
+router.post("/vendor", [Authenticate, AdminAuth], CreateVendor);
 // router.get("/vandors", GetVanndors);
 // router.get("/vandor/:id", GetVandorByID);
 // router.get("/transaction", GetTransaction);
@@ -20,7 +21,7 @@ router.post("/vendor", CreateVendor);
 // router.put("/verify-deliveries/:id", VerifyDeliveryBoys);
 
 router.get("/", (req: Request, res: Response, next: NextFunction) => {
-  res.json({ message: "Heye there this is Fetan Delivery Admin DashBoard" });
+  res.json({ message: "Heye there! this is Fetan Delivery Admin DashBoard" });
 });
 
 export { router as AdminRoute };

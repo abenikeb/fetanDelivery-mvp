@@ -69,4 +69,18 @@ export class Vendor {
     const sql = `SELECT * FROM venders WHERE id = $1`;
     return pool.query(sql, [payload.id]);
   }
+
+  static save(profile: VendorType, id:number) {
+    const sql = `UPDATE users SET name = $1, address_line1 = $2, address_line2 = $3, email = $4, tel = $5,
+    password = $6 WHERE id = $7 RETURNING *`;
+    return pool.query(sql, [
+      profile.name,
+      profile.address_line1,
+      profile.address_line2,
+      profile.email,
+      profile.tel,
+      profile.password,
+      id
+    ]);
+  }
 }

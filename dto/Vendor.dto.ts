@@ -61,6 +61,17 @@ export class CreateVendorInput {
   // modified_at?: Date = new Date();
 }
 
+export class CreateVendorLogin {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Length(6, 50)
+  password: string;
+}
+
 export interface VendorType {
   name: string;
   email: string;
@@ -118,4 +129,5 @@ export interface VendorPayLoad {
   id: number;
   email: string;
   name: string;
+  // user_group: number;
 }

@@ -7,7 +7,7 @@ import {
   UserRoute,
   // CustomerRoute,
   // DeliveryRoute,
-  // VendorRoute,
+  VendorRoute,
 } from "../router";
 import { error } from "../middleware/error";
 
@@ -17,10 +17,10 @@ export default async (app: Application) => {
   app.use("/images", express.static(path.join(__dirname, "images")));
 
   // app.use("/", CustomerRoute);
-  app.use("/admin/api", AdminRoute);
-  app.use("/user/api", UserRoute);
+  app.use("/api/admin", AdminRoute);
+  app.use("/api/user", UserRoute);
   // app.use("/delivery", DeliveryRoute);
-  // app.use("/vendor", VendorRoute);
+  app.use("/api/vendor", VendorRoute);
   app.use(error);
 
   return app;

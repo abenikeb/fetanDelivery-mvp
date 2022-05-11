@@ -2,6 +2,8 @@ import { plainToClass } from "class-transformer";
 import { Request, Response, NextFunction } from "express";
 import { maxLength, validate } from "class-validator";
 
+import _ from "lodash";
+
 import {
   UserPayload,
   CreateUserType,
@@ -124,6 +126,7 @@ export const UserLogin = async (
   const signture = GenerateSignature({
     id: existUser.rows[0].id,
     tel: existUser.rows[0].tel,
+    user_group: existUser.rows[0].user_group,
   });
   res.status(200).json(signture);
 };
@@ -205,6 +208,12 @@ export const EditUserProfile = async (
   res: Response,
   next: NextFunction
 ) => {
+  const user = req.user as UserPayload;
+  if (!user)
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
+
   const userInputs = plainToClass(EditProfile, req.body);
   const inputErrors = await validate(userInputs, {
     validationError: { target: true },
@@ -224,16 +233,11 @@ export const EditUserProfile = async (
     lng,
   } = <UserType>userInputs;
 
-  const user = req.user as UserPayload;
-  if (!user)
-    return res
-      .status(401)
-      .json({ message: "Access denied. No token provided." });
-
   let profile = (await User.findById({ id: user.id })) as any;
   if (!profile) return res.status(400).json({ message: "Invalid Vendor!" });
 
   profile = profile.rows[0];
+
   profile.first_name = first_name;
   profile.last_name = last_name;
   profile.email = email;
@@ -244,7 +248,22 @@ export const EditUserProfile = async (
   profile.lng = lng;
 
   const result = await User.save(profile);
-  res.json(result.rows[0]);
+
+  res.json(
+    _.pick(result.rows[0], [
+      "id",
+      "first_name",
+      "last_name",
+      "email",
+      "tel",
+      "address_line1",
+      "address_line2",
+      "city",
+      "lat",
+      "lng",
+      "user_group",
+    ])
+  );
 };
 
 // // offer Section

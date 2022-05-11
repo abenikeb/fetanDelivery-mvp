@@ -83,6 +83,7 @@ export interface UserPayload {
   id: number;
   tel: string;
   verified?: boolean;
+  user_group: number;
 }
 
 // export class OrderInputs {

@@ -4,6 +4,8 @@ CREATE TABLE "users_group" (
   "desc" varchar
 );
 
+INSERT INTO users_group (name) VALUES ('Customer') RETURNING id;
+
 CREATE TABLE "users" (
   "id" BIGSERIAL PRIMARY KEY,
   "first_name" varchar NOT NULL,

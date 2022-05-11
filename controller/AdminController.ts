@@ -1,6 +1,8 @@
 import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
+import _ from "lodash";
+
 import { CreateVendorInput, VendorType } from "../dto";
 import { Vendor } from "../model";
 import {
@@ -25,7 +27,9 @@ export const CreateVendor = async (
     validationError: { target: true },
   });
   if (vendorInputErrors.length > 0) {
-    return res.status(400).json(vendorInputErrors);
+    return res
+      .status(400)
+      .json(_.map(vendorInputErrors, (error) => error.constraints));
   }
 
   const {
@@ -51,7 +55,7 @@ export const CreateVendor = async (
     name: name,
     email: email,
     owner_id: owner_id,
-    password: password,
+    password: userPassword,
     tel: tel,
     salt: salt,
     service_available: false,
