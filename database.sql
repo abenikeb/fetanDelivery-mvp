@@ -13,7 +13,7 @@ CREATE TABLE "users" (
   "tel" varchar NOT NULL,
   "password" text,
   "salt" text,
-  "oto" varchar,
+  "otp" varchar,
   "otp_expiry" timestamp,
   "address_line1" varchar,
   "address_line2" varchar,
@@ -117,7 +117,7 @@ CREATE TABLE "orders" (
   "user_id" int NOT NULL,
   "status" int,
   "vender_id" int NOT NULL,
-  "payment_via" varcher,
+  "payment_via" varchar,
   "delivery_boy" int,
   "created_at" timestamp,
   "modified_at" timestamp
@@ -132,9 +132,9 @@ CREATE TABLE "order_items" (
 
 CREATE TABLE "notifications" (
   "id" BIGSERIAL PRIMARY KEY,
-  "message" varcher NOT NULL,
+  "message" varchar NOT NULL,
   "isRead" boolean,
-  "type" varcher NOT NULL,
+  "type" varchar NOT NULL,
   "receiver_id" int,
   "status" int,
   "created_at" timestamp,
