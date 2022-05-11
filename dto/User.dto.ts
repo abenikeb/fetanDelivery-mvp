@@ -82,6 +82,8 @@ export interface UserType {
 export interface UserPayload {
   id: number;
   tel: string;
+  email: string;
+  name: string;
   verified?: boolean;
   user_group: number;
 }

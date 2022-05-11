@@ -48,10 +48,10 @@ export const VendorLogin = async (
   if (!validation) return res.status(400).json("Invalid email or password");
 
   const signture = GenerateSignature({
-    id: existingVandor.rows[0]._id,
+    id: existingVandor.rows[0].id,
     email: existingVandor.rows[0].email,
     name: existingVandor.rows[0].name,
-  } as any);
+  } as UserPayload);
 
   return res.status(200).json(signture);
 };
@@ -67,11 +67,31 @@ export const GetVendorProfile = async (
       .status(401)
       .json({ message: "Access denied. No token provided." });
 
-  console.log("dd", user.id);
   let vendor = await FindVendor(user.id);
   if (!vendor) return res.status(400).json({ message: "Invalid Vendor!" });
 
-  return res.status(200).json(vendor.rows[0]);
+  return res
+    .status(200)
+    .json(
+      _.pick(vendor.rows[0], [
+        "id",
+        "name",
+        "email",
+        "tel",
+        "password",
+        "service_available",
+        "rating",
+        "address_line1",
+        "address_line2",
+        "city",
+        "lat",
+        "lng",
+        "first_name",
+        "last_name",
+        "verified",
+        "user_group",
+      ])
+    );
 };
 
 export const UpdateVendorProfile = async (
@@ -103,7 +123,17 @@ export const UpdateVendorProfile = async (
 
   const result = await Vendor.save(existingVendor, existingVendor.id);
 
-  res.json(result.rows[0]);
+  res.json(
+    _.pick(result.rows[0], [
+      "id",
+      "name",
+      "password",
+      "email",
+      "tel",
+      "address_line1",
+      "address_line2",
+    ])
+  );
 };
 
 export const UpdateVendorCoverImage = async (
@@ -129,86 +159,88 @@ export const UpdateVendorCoverImage = async (
   res.status(200).json({ result: existingVandor });
 };
 
-// export const UpdateVendorService = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   const user = req.user as UserPayload;
-//   if (!user)
-//     return res
-//       .status(401)
-//       .json({ message: "Access denied. No token provided." });
+export const UpdateVendorService = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user as UserPayload;
+  if (!user)
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
 
-//   let existingVandor = await FindVendor(user.id);
-//   if (!existingVandor)
-//     return res.status(400).json({ message: "Invalid Vendor!" });
+  let existingVendor = (await FindVendor(user.id)) as any;
+  if (!existingVendor)
+    return res.status(400).json({ message: "Invalid Vendor!" });
 
-//   existingVandor.serviceAvailable = !existingVandor.serviceAvailable;
+  existingVendor = existingVendor.rows[0];
+  existingVendor.service_available = !existingVendor.service_available;
 
-//   const { lat, lng } = req.body as UserType;
-//   if (!(lat && lng))
-//     return res.status(400).json({
-//       message: "We were unable to locate the vendor's location.",
-//     });
+  const { lat, lng } = req.body as UserType;
+  if (!(lat && lng))
+    return res.status(400).json({
+      message: "We were unable to locate the vendor's location.",
+    });
 
-//   existingVandor.lat = lat;
-//   existingVandor.lng = lng;
+  existingVendor.lat = lat;
+  existingVendor.lng = lng;
 
-//   await existingVandor.save();
-//   res.send(existingVandor);
-// };
+  const result = await Vendor.saveSevice(existingVendor, existingVendor.id);
+  res.send(result.rows[0]);
+};
 
-// export const AddProduct = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   const user = req.user as UserPayload;
-//   if (!user)
-//     return res
-//       .status(401)
-//       .json({ message: "Access denied. No token provided." });
+export const AddProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user as UserPayload;
+  if (!user)
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
 
-//   let vendor = await FindVandor(user.id);
-//   if (!vendor) return res.status(400).json({ message: "Invalid Vendor!" });
+  let vendor = await FindVendor(user.id);
+  if (!vendor) return res.status(400).json({ message: "Invalid Vendor!" });
 
-//   const files = req.files as [Express.Multer.File];
-//   const images = files.map((file: Express.Multer.File) => file.filename);
+  const files = req.files as [Express.Multer.File];
+  const images = files.map((file: Express.Multer.File) => file.filename);
 
-//   const CreateProductInputs = plainToClass(CreateProductInput, req.body);
-//   const CreateProductInputsError = await validate(CreateProductInputs, {
-//     validationError: { target: true },
-//   });
-//   if (CreateProductInputsError.length > 0)
-//     return res.json(CreateProductInputsError);
+  const CreateProductInputs = plainToClass(CreateProductInput, req.body);
+  const CreateProductInputsError = await validate(CreateProductInputs, {
+    validationError: { target: true },
+  });
+  if (CreateProductInputsError.length > 0)
+    return res.json(CreateProductInputsError);
 
-//   const {
-//     name,
-//     desc,
-//     category_id,
-//     inventory_id,
-//     shipping_id,
-//     price,
-//     status,
-//     tag_id,
-//     vender_id,
-//     rating,
-//     modified_at,
-//   } = CreateProductInputs;
-//   const groceryCreate = await Grocery.create({
-//     vandorId: vendor._id,
-//     name: name,
-//     desc: desc,
-//     category_id: category_id,
-//     images: images,
-//     inventory_id: inventory_id,
-//   });
+  const {
+    name,
+    desc,
+    category_id,
+    inventory_id,
+    shipping_id,
+    price,
+    status,
+    tag_id,
+    vender_id,
+    rating,
+    modified_at,
+  } = CreateProductInputs;
 
-//   vendor.grocery.push(groceryCreate);
-//   await vendor.save();
-//   res.status(200).json({ vendor });
-// };
+  const groceryCreate = await Grocery.create({
+    vandorId: vendor._id,
+    name: name,
+    desc: desc,
+    category_id: category_id,
+    images: images,
+    inventory_id: inventory_id,
+  });
+
+  vendor.grocery.push(groceryCreate);
+  await vendor.save();
+  res.status(200).json({ vendor });
+};
 
 // export const GetProducts = async (
 //   req: Request,

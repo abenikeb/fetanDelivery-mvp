@@ -66,21 +66,30 @@ export class Vendor {
   }
 
   static findById(payload: { id: number }) {
-    const sql = `SELECT * FROM venders WHERE id = $1`;
+    const sql = `SELECT * FROM venders INNER JOIN users ON venders.owner_id = users.id WHERE venders.id = $1`;
     return pool.query(sql, [payload.id]);
+    // const sql = `SELECT * FROM venders WHERE id = $1`;
   }
 
-  static save(profile: VendorType, id:number) {
-    const sql = `UPDATE users SET name = $1, address_line1 = $2, address_line2 = $3, email = $4, tel = $5,
+  static save(profile: VendorType, id: number) {
+    const sql = `UPDATE venders SET name = $1, address_line1 = $2, address_line2 = $3, email = $4, tel = $5,
     password = $6 WHERE id = $7 RETURNING *`;
+    const { name, address_line1, address_line2, email, tel, password } =
+      profile;
     return pool.query(sql, [
-      profile.name,
-      profile.address_line1,
-      profile.address_line2,
-      profile.email,
-      profile.tel,
-      profile.password,
-      id
+      name,
+      address_line1,
+      address_line2,
+      email,
+      tel,
+      password,
+      id,
     ]);
+  }
+
+  static saveSevice(profile: VendorType, id: number) {
+    const sql = `UPDATE venders SET service_available = $1, lat = $2, lng = $3 WHERE id = $4 RETURNING *`;
+    const { service_available, lat, lng } = profile;
+    return pool.query(sql, [service_available, lat, lng, id]);
   }
 }

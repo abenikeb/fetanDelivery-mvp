@@ -127,7 +127,7 @@ export const UserLogin = async (
     id: existUser.rows[0].id,
     tel: existUser.rows[0].tel,
     user_group: existUser.rows[0].user_group,
-  });
+  } as UserPayload);
   res.status(200).json(signture);
 };
 

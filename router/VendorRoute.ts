@@ -6,7 +6,8 @@ import {
   GetVendorProfile,
   //   UpdateVendorCoverImage,
   //   UpdateVendorProfile,
-  //   UpdateVendorService,
+  UpdateVendorProfile,
+  UpdateVendorService,
   VendorLogin,
   //   GetOrdersDetail,
   //   ProcessOrder,
@@ -32,9 +33,9 @@ router.post("/login", VendorLogin);
 
 //profile section
 router.get("/profile", Authenticate, GetVendorProfile);
-// router.post("/updateProfile", UpdateVendorProfile);
+router.post("/updateProfile", Authenticate, UpdateVendorProfile);
 // router.post("/updateCover", images, UpdateVendorCoverImage);
-// router.post("/updateService", UpdateVendorService);
+router.post("/updateService", Authenticate, UpdateVendorService);
 
 // //product section
 // router.post("/grocery", images, AddGrocery);
