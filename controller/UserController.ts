@@ -84,6 +84,7 @@ export const UserSignUp = async (
     id: result.rows[0].id,
     tel: result.rows[0].tel,
     verified: result.rows[0].verified,
+    user_group: result.rows[0].user_group,
   } as UserPayload);
 
   return res

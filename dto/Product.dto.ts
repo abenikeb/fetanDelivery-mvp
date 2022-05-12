@@ -29,30 +29,50 @@ export interface ProductCategory {
 export class CreateProductInput {
   @IsNotEmpty()
   @Length(7, 15)
-  name?: string;
+  name: string;
 
   @Length(6, 250)
-  desc?: string;
+  desc: string;
 
   @IsInt()
   @IsNotEmpty()
-  category_id?: number;
+  category_id: number;
+
+  @IsNotEmpty()
+  product_image: string;
+
+  @IsInt()
+  inventory_id: number;
 
   @IsInt()
   @IsNotEmpty()
-  price?: number;
+  SKU_id: number;
 
   @IsInt()
   @IsNotEmpty()
-  vender_id?: number;
+  status: number;
+
+  @IsInt()
+  @IsNotEmpty()
+  tag_id: number;
+
+  @IsInt()
+  @IsNotEmpty()
+  price: number;
+
+  @IsInt()
+  @IsNotEmpty()
+  vender_id: number;
 }
 
 export interface ProductType {
   name: string;
   desc?: string;
+  product_image?: string;
+  product_images?: [string];
   category_id: number;
   inventory_id?: number;
-  shipping_id: number;
+  SKU_id: number;
   price: number;
   status?: number;
   tag_id?: number;

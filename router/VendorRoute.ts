@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  //   AddGrocery,
+  AddProduct,
   //   GetGroceries,
   //   GetOrdersVandor,
   GetVendorProfile,
@@ -38,7 +38,7 @@ router.post("/updateProfile", Authenticate, UpdateVendorProfile);
 router.post("/updateService", Authenticate, UpdateVendorService);
 
 // //product section
-// router.post("/grocery", images, AddGrocery);
+router.post("/product", [Authenticate, images], AddProduct);
 // router.get("/groceries", GetGroceries);
 
 // //order section

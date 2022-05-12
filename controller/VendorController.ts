@@ -13,11 +13,11 @@ import {
   VendorPayLoad,
   VendorType,
   CreateVendorLogin,
+  ProductType,
 } from "../dto";
-// import { Grocery, Vendor } from "../models";
 import { GenerateSignature, ValidatePassword } from "../utility";
 import { FindVendor } from "../controller";
-import { Vendor } from "../model";
+import { Vendor, Product } from "../model";
 
 export const VendorLogin = async (
   req: Request,
@@ -36,9 +36,8 @@ export const VendorLogin = async (
   const { email, password } = CreateVendorInputs;
 
   const existingVandor = await FindVendor("" as any, email);
-  if (!existingVandor) return res.status(400).json("Invalid email or password");
-
-  console.log(existingVandor.rows[0]);
+  if (!existingVandor.rows[0])
+    return res.status(400).json("Invalid email or password");
 
   const validation = await ValidatePassword(
     password,
@@ -109,7 +108,7 @@ export const UpdateVendorProfile = async (
       .json({ message: "Access denied. No token provided." });
 
   let existingVendor = (await FindVendor(user.id)) as any;
-  if (!existingVendor)
+  if (!existingVendor.rows[0])
     return res.status(400).json({ message: "Invalid Vendor!" });
 
   existingVendor = existingVendor.rows[0];
@@ -206,40 +205,50 @@ export const AddProduct = async (
 
   const files = req.files as [Express.Multer.File];
   const images = files.map((file: Express.Multer.File) => file.filename);
+  console.log({ images: images });
 
-  const CreateProductInputs = plainToClass(CreateProductInput, req.body);
-  const CreateProductInputsError = await validate(CreateProductInputs, {
-    validationError: { target: true },
-  });
-  if (CreateProductInputsError.length > 0)
-    return res.json(CreateProductInputsError);
+  // const CreateProductInputs = plainToClass(CreateProductInput, req.body);
+  // const CreateProductInputsError = await validate(CreateProductInputs, {
+  //   validationError: { target: true },
+  // });
+  // if (CreateProductInputsError.length > 0)
+  //   return res.json(CreateProductInputsError);
 
   const {
     name,
     desc,
     category_id,
     inventory_id,
-    shipping_id,
+    SKU_id,
     price,
     status,
     tag_id,
-    vender_id,
-    rating,
-    modified_at,
-  } = CreateProductInputs;
+  } = req.body as any;
 
-  const groceryCreate = await Grocery.create({
-    vandorId: vendor._id,
+  console.log({ category_id: Number(category_id) });
+
+  const productCreate = new Product({
     name: name,
     desc: desc,
-    category_id: category_id,
-    images: images,
-    inventory_id: inventory_id,
-  });
+    product_image: "",
+    product_images: images,
+    category_id: Number(category_id),
+    inventory_id: Number(inventory_id),
+    SKU_id: Number(SKU_id),
+    price: Number(price),
+    status: Number(status),
+    tag_id: Number(tag_id),
+    tag_id2: 0,
+    tag_id3: 0,
+    vender_id: vendor.rows[0].id,
+    rating: 0,
+    modified_at: new Date(),
+  } as any);
 
-  vendor.grocery.push(groceryCreate);
-  await vendor.save();
-  res.status(200).json({ vendor });
+  const result = await productCreate.create();
+  // vendor.grocery.push(groceryCreate);
+  // await vendor.save();
+  res.status(200).send(result.rows[0]);
 };
 
 // export const GetProducts = async (
