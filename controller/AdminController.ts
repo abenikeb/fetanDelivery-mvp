@@ -3,7 +3,7 @@ import { validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
 import _ from "lodash";
 
-import { CreateVendorInput, VendorType } from "../dto";
+import { CreateVendorInput, UserPayload, VendorType } from "../dto";
 import { Vendor } from "../model";
 import {
   GeneratePassword,
@@ -76,7 +76,7 @@ export const CreateVendor = async (
     id: result.rows[0].id,
     email: result.rows[0].email,
     name: result.rows[0].name,
-  });
+  } as UserPayload);
 
   return res
     .header("x-auth-token", signture)

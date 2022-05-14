@@ -203,9 +203,10 @@ export const AddProduct = async (
   let vendor = await FindVendor(user.id);
   if (!vendor) return res.status(400).json({ message: "Invalid Vendor!" });
 
+  const imageCollections = [] as Array<string>;
   const files = req.files as [Express.Multer.File];
   const images = files.map((file: Express.Multer.File) => file.filename);
-  console.log({ images: images });
+  _.forEach(files, (uploadIage) => imageCollections.push(uploadIage.filename));
 
   // const CreateProductInputs = plainToClass(CreateProductInput, req.body);
   // const CreateProductInputsError = await validate(CreateProductInputs, {
@@ -225,29 +226,25 @@ export const AddProduct = async (
     tag_id,
   } = req.body as any;
 
-  console.log({ category_id: Number(category_id) });
-
   const productCreate = new Product({
     name: name,
     desc: desc,
     product_image: "",
-    product_images: images,
+    product_images: imageCollections,
     category_id: Number(category_id),
     inventory_id: Number(inventory_id),
     SKU_id: Number(SKU_id),
     price: Number(price),
     status: Number(status),
     tag_id: Number(tag_id),
-    tag_id2: 0,
-    tag_id3: 0,
+    tag_id2: 1,
+    tag_id3: 1,
     vender_id: vendor.rows[0].id,
     rating: 0,
     modified_at: new Date(),
   } as any);
 
   const result = await productCreate.create();
-  // vendor.grocery.push(groceryCreate);
-  // await vendor.save();
   res.status(200).send(result.rows[0]);
 };
 

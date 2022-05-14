@@ -38,7 +38,7 @@ export class Product {
   }
 
   create() {
-    const _sql = `INSERT INTO products (name, desc, product_image, category_id, inventory_id, SKU_id, price,
+    const _sql = `INSERT INTO products (name, _desc, product_image, category_id, inventory_id, SKU_id, price,
                   status, tag_id, tag_id2, tag_id3, vender_id, rating, created_at, modified_at, product_images)
                   VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING *`;
 

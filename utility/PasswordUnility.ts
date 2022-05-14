@@ -2,7 +2,7 @@ require("dotenv").config();
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { AuthPayLoad } from "../dto";
+import { AuthPayLoad, UserPayload } from "../dto";
 
 export const GenerateSalt = async () => {
   return await bcrypt.genSalt();
@@ -20,7 +20,7 @@ export const ValidatePassword = async (
   return (await GeneratePassword(enteredPassword, salt)) === savedPassword;
 };
 
-export const GenerateSignature = (payload: AuthPayLoad) => {
+export const GenerateSignature = (payload: UserPayload) => {
   return jwt.sign(payload, process.env.JWT_PRIVATE_KEY as string);
 };
 
@@ -32,8 +32,8 @@ export const ValidateSignture = async (req: any, res: Response) => {
   try {
     const payload = (await jwt.verify(
       token.split(" ")[1],
-      process.env.JWT_PRIVATE_KEY as any
-    )) as AuthPayLoad;
+      process.env.JWT_PRIVATE_KEY as string
+    )) as UserPayload;
 
     req.user = payload;
     return true;

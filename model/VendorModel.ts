@@ -66,7 +66,8 @@ export class Vendor {
   }
 
   static findById(payload: { id: number }) {
-    const sql = `SELECT * FROM venders INNER JOIN users ON venders.owner_id = users.id WHERE venders.id = $1`;
+    const sql = `SELECT venders.id, venders.name, venders.email, venders.email, venders.tel, venders.rating, venders.address_line1, 
+                 venders.address_line2, venders.service_available, users.first_name, users.last_name, users.verified FROM venders INNER JOIN users ON venders.owner_id = users.id WHERE venders.id = $1`;
     return pool.query(sql, [payload.id]);
     // const sql = `SELECT * FROM venders WHERE id = $1`;
   }
